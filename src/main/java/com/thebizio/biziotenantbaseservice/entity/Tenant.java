@@ -8,11 +8,11 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "data_sources")
+@Table(name = "tenants")
 @Getter
 @Setter
 @NoArgsConstructor
-public class DataSource extends LastUpdateDetail{
+public class Tenant extends LastUpdateDetail{
     @Id
     @GeneratedValue(generator = "uuid4")
     @Column

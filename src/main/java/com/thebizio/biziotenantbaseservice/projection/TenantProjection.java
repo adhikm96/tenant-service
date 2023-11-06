@@ -1,6 +1,6 @@
 package com.thebizio.biziotenantbaseservice.projection;
 
-public interface DSPrj {
+public interface TenantProjection {
     String getId();
 
     String getTenantId();

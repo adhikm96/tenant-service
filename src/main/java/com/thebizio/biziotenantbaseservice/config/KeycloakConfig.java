@@ -37,13 +37,27 @@ class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
 	@Value("${cors-allowed-origin}")
 	private String corsAllowedOrigin;
 
+	@Value("${whitelist-ip}")
+	private String ipAddress;
+
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		super.configure(http);
 
 		http.csrf().disable().authorizeRequests()
+
+				// internal routes
+				.antMatchers("/api/v1/internal/tenants").access("@customSecurityExpressionRoot.isAuthorizedIpAddress('" + ipAddress + "')")
+				.antMatchers("/api/v1/internal/tenants/{tenantId}/{orgCode}/{appCode}").access("@customSecurityExpressionRoot.isAuthorizedIpAddress('" + ipAddress + "')")
+
+				// public routes
 				.antMatchers("/actuator/health").permitAll()
-				.anyRequest().authenticated().and().cors().configurationSource(corsConfigurationSource());
+
+				// auth routes
+				.anyRequest().authenticated()
+				.and().cors()
+				.configurationSource(corsConfigurationSource());
 	}
 
 	@Autowired
