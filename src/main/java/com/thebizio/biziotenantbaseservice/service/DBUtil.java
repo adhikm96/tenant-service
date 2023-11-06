@@ -16,8 +16,5 @@ public class DBUtil {
         __[__.length-1] = db;
         return String.join("/", __);
     }
-    public String getRandomDBUrl() {
-        return getDbUrl(UUID.randomUUID().toString());
-    }
 
 }

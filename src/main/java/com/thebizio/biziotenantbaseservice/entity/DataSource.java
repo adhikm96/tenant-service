@@ -20,6 +20,7 @@ public class DataSource extends LastUpdateDetail{
 
     private String tenantId;
     private String orgCode;
+    private String appCode;
 
     private String url;
 

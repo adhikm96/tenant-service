@@ -6,6 +6,8 @@ public interface DSPrj {
     String getTenantId();
 
     String getUrl();
+    String getAppCode();
+    String getOrgCode();
 
     String getUsername();
 

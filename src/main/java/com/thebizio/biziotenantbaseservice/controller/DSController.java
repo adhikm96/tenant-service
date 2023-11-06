@@ -17,9 +17,9 @@ public class DSController {
         this.dSourceService = dSourceService;
     }
 
-    @PostMapping("/{tenantId}/{orgCode}")
-    public ResponseMessageDto createDS(@PathVariable String tenantId, @PathVariable String orgCode) {
-        return new ResponseMessageDto(dSourceService.createDatabase(tenantId, orgCode));
+    @PostMapping("/{tenantId}/{orgCode}/{appCode}")
+    public ResponseMessageDto createDS(@PathVariable String tenantId, @PathVariable String orgCode, @PathVariable String appCode) {
+        return new ResponseMessageDto(dSourceService.createDataSourceEntry(tenantId, orgCode, appCode).getId().toString());
     }
 
     @GetMapping
