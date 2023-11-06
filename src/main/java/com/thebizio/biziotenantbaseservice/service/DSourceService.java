@@ -7,6 +7,7 @@ import com.thebizio.biziotenantbaseservice.repo.DSRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -26,12 +27,16 @@ public class DSourceService {
 
     final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
 
-    public DSourceService(DBUtil dbUtil, DSRepo dsRepo, CryptoService cryptoService) {
+    final DBQueryHelper dbQueryHelper;
+
+    public DSourceService(DBUtil dbUtil, DSRepo dsRepo, CryptoService cryptoService, DBQueryHelper dbQueryHelper) {
         this.dbUtil = dbUtil;
         this.dsRepo = dsRepo;
         this.cryptoService = cryptoService;
+        this.dbQueryHelper = dbQueryHelper;
     }
 
+    @Transactional
     public DataSource createDataSourceEntry(String tenantId, String orgCode, String appCode) {
         DataSource dataSource = new DataSource();
 
@@ -47,7 +52,13 @@ public class DSourceService {
         dataSource.setUrl(dbUtil.getDbUrl(tenantId));
         dataSource.setDriverClassName(DRIVER_CLASS_NAME);
 
-        return dsRepo.save(dataSource);
+        dsRepo.save(dataSource);
+
+        if(!dbQueryHelper.createDataBase(dataSource.getTenantId())) {
+            throw new ValidationException("failed to create tenant");
+        }
+
+        return dataSource;
     }
 
     public List<DSPrj> list() {

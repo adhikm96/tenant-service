@@ -1,6 +1,8 @@
 package com.thebizio.biziotenantbaseservice.service;
 
+import com.thebizio.biziotenantbaseservice.entity.DataSource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -16,5 +18,4 @@ public class DBUtil {
         __[__.length-1] = db;
         return String.join("/", __);
     }
-
 }

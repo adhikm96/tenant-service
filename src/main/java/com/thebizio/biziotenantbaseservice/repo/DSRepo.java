@@ -3,6 +3,7 @@ package com.thebizio.biziotenantbaseservice.repo;
 import com.thebizio.biziotenantbaseservice.entity.DataSource;
 import com.thebizio.biziotenantbaseservice.projection.DSPrj;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -16,4 +17,5 @@ public interface DSRepo extends JpaRepository<DataSource, UUID> {
     List<DSPrj> fetchAll();
 
     boolean existsByTenantId(String tenantId);
+
 }
