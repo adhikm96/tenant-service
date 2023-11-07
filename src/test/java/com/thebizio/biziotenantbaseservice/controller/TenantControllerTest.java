@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,7 +69,7 @@ public class TenantControllerTest extends BaseControllerTest {
 
         Tenant tenant = tenantService.createTenant(tenantId, orgCode, appCode);
 
-        mvc.perform(mvcReqHelper.setUpWithoutToken(post("/api/v1/internal/tenants")))
+        mvc.perform(mvcReqHelper.setUpWithoutToken(get("/api/v1/internal/tenants")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(1)))
                 .andExpect(jsonPath("$[0].id", is(tenant.getId().toString())))
@@ -86,7 +87,7 @@ public class TenantControllerTest extends BaseControllerTest {
 
         tenant = tenantService.createTenant(tenantId, orgCode, appCode);
 
-        mvc.perform(mvcReqHelper.setUpWithoutToken(post("/api/v1/internal/tenants?appCode=" + appCode)))
+        mvc.perform(mvcReqHelper.setUpWithoutToken(get("/api/v1/internal/tenants?appCode=" + appCode)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(1)))
                 .andExpect(jsonPath("$[0].id", is(tenant.getId().toString())))
