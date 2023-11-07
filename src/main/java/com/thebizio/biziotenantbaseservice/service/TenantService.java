@@ -4,14 +4,11 @@ import com.thebizio.biziotenantbaseservice.entity.Tenant;
 import com.thebizio.biziotenantbaseservice.exception.ValidationException;
 import com.thebizio.biziotenantbaseservice.projection.TenantProjection;
 import com.thebizio.biziotenantbaseservice.repo.TenantRepo;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class TenantService {
@@ -22,12 +19,12 @@ public class TenantService {
 
     final CryptoService cryptoService;
 
-    final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
+    public final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
 
     final DBQueryHelper dbQueryHelper;
 
     final StrUtil strUtil;
-    private final String DB_NAME_PREFIX = "salon-db-";
+    public final String DB_NAME_PREFIX = "salon-db-";
 
     public TenantService(DBUtil dbUtil, TenantRepo tenantRepo, CryptoService cryptoService, DBQueryHelper dbQueryHelper, StrUtil strUtil) {
         this.dbUtil = dbUtil;
@@ -50,7 +47,6 @@ public class TenantService {
         tenant.setAppCode(appCode);
         tenant.setUsername(DB_NAME_PREFIX + orgCode);
 
-        System.out.println(strUtil.getRandomDBPassword());
         tenant.setPassword(cryptoService.encrypt(strUtil.getRandomDBPassword()));
         tenant.setUrl(dbUtil.getDbUrl(tenantId));
         tenant.setDriverClassName(DRIVER_CLASS_NAME);

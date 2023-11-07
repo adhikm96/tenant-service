@@ -13,13 +13,13 @@ public interface TenantRepo extends JpaRepository<Tenant, UUID> {
 
     @Query("select tenant.id as id, tenant.tenantId as tenantId, tenant.orgCode as orgCode, tenant.appCode as appCode," +
             " tenant.url as url, tenant.username as username, tenant.password as password, tenant.driverClassName as driverClassName" +
-            " from Tenant tenant")
+            " from Tenant tenant order by tenant.modified desc")
     List<TenantProjection> fetchAll();
 
     boolean existsByTenantId(String tenantId);
 
     @Query("select tenant.id as id, tenant.tenantId as tenantId, tenant.orgCode as orgCode, tenant.appCode as appCode," +
             " tenant.url as url, tenant.username as username, tenant.password as password, tenant.driverClassName as driverClassName" +
-            " from Tenant tenant where tenant.appCode = :appCode")
+            " from Tenant tenant where tenant.appCode = :appCode order by tenant.modified desc")
     List<TenantProjection> fetchAllByAppCode(Optional<String> appCode);
 }
