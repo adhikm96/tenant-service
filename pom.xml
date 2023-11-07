@@ -88,7 +88,6 @@
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-admin-client</artifactId>
             <version>16.1.1</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
