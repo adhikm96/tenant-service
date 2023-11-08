@@ -15,8 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import java.sql.ResultSet;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,8 +38,10 @@ public class TenantControllerTest extends BaseControllerTest {
         String orgCode =  UUID.randomUUID().toString();
         String appCode =  UUID.randomUUID().toString();
 
-        mvc.perform(mvcReqHelper.setUpWithoutToken(post("/api/v1/internal/tenants/"+ tenantId + "/" + orgCode + "/" + appCode)))
+        mvc.perform(mvcReqHelper.setUpWithXPrivPass(post("/api/v1/internal/tenants/"+ tenantId + "/" + orgCode + "/" + appCode)))
                 .andExpect(status().isOk());
+
+        assertFalse(tenantRepo.findAll().isEmpty());
 
         Tenant tenant = tenantRepo.findAll().get(0);
 
@@ -59,6 +60,12 @@ public class TenantControllerTest extends BaseControllerTest {
         }
 
         assertNotNull(dataSource);
+
+        mvc.perform(mvcReqHelper.setUp(post("/api/v1/internal/tenants/"+ tenantId + "/" + orgCode + "/" + appCode)))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(mvcReqHelper.setUpWithoutToken(post("/api/v1/internal/tenants/"+ tenantId + "/" + orgCode + "/" + appCode)))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -69,7 +76,7 @@ public class TenantControllerTest extends BaseControllerTest {
 
         Tenant tenant = tenantService.createTenant(tenantId, orgCode, appCode);
 
-        mvc.perform(mvcReqHelper.setUpWithoutToken(get("/api/v1/internal/tenants")))
+        mvc.perform(mvcReqHelper.setUpWithXPrivPass(get("/api/v1/internal/tenants")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(1)))
                 .andExpect(jsonPath("$[0].id", is(tenant.getId().toString())))
@@ -87,7 +94,7 @@ public class TenantControllerTest extends BaseControllerTest {
 
         tenant = tenantService.createTenant(tenantId, orgCode, appCode);
 
-        mvc.perform(mvcReqHelper.setUpWithoutToken(get("/api/v1/internal/tenants?appCode=" + appCode)))
+        mvc.perform(mvcReqHelper.setUpWithXPrivPass(get("/api/v1/internal/tenants?appCode=" + appCode)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(1)))
                 .andExpect(jsonPath("$[0].id", is(tenant.getId().toString())))
@@ -98,5 +105,11 @@ public class TenantControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$[0].username", is(tenant.getUsername())))
                 .andExpect(jsonPath("$[0].password", is(tenant.getPassword())))
                 .andExpect(jsonPath("$[0].driverClassName", is(tenant.getDriverClassName())));
+
+        mvc.perform(mvcReqHelper.setUp(get("/api/v1/internal/tenants")))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(mvcReqHelper.setUpWithoutToken(get("/api/v1/internal/tenants")))
+                .andExpect(status().isUnauthorized());
     }
 }
